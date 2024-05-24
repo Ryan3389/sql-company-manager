@@ -98,3 +98,71 @@ function viewAllEmployees() {
         })
         .then(() => questions());
 }
+
+function promptToAddDept() {
+    inquirer.prompt([
+        {
+            type: 'text',
+            name: 'deptName',
+            message: 'Add new department'
+        }
+    ]).then((response) => {
+        const { deptName } = response
+        database.addDept(deptName)
+            .then(() => questions())
+    })
+}
+
+function promptToAddEmployee() {
+    inquirer.prompt([
+        {
+            type: 'text',
+            name: 'firstName',
+            message: 'Add employee first name'
+        },
+        {
+            type: 'text',
+            name: 'lastName',
+            message: 'Add employee last name'
+        },
+        {
+            type: 'text',
+            name: 'role',
+            message: 'Enter employee role'
+        },
+        {
+            type: 'text',
+            name: 'manager',
+            message: 'Add manager name'
+        }
+    ]).then((response) => {
+        const { firstName, lastName, role, manager } = response
+        database.addEmployee(firstName, lastName, role, manager)
+            .then(() => questions())
+    })
+}
+
+
+function promptToAddNewRole() {
+    inquirer.prompt([
+        {
+            type: 'text',
+            name: 'roleTitle',
+            message: 'Enter the title for this role'
+        },
+        {
+            type: 'text',
+            name: 'roleDept',
+            message: 'What department does this role belong to ?'
+        },
+        {
+            type: 'text',
+            name: 'roleSalary',
+            message: 'Enter the salary for this role'
+        }
+    ]).then((response) => {
+        const { roleTitle, roleDept, roleSalary } = response
+        database.addRole(roleTitle, roleDept, roleSalary)
+            .then(() => questions())
+    })
+}
