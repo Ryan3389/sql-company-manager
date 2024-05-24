@@ -22,7 +22,6 @@ class DB {
 
     // View all roles
     viewRoles() {
-        // return this.query('SELECT * FROM role');
         return this.query(`
     SELECT 
     role.id AS role_id,
