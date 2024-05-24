@@ -1,5 +1,9 @@
-const inquirer = require('inquirer');
-const DB = require('./db');
+// const inquirer = require('inquirer');
+// const DB = require('./db');
+// const database = new DB()
+
+const inquirer = require('inquirer')
+const DB = require('./db/db')
 const database = new DB()
 
 function questions() {
@@ -165,4 +169,33 @@ function promptToAddNewRole() {
         database.addRole(roleTitle, roleDept, roleSalary)
             .then(() => questions())
     })
+}
+
+function updateEmployeeRole() {
+    database.viewEmployees()
+        .then(({ rows }) => {
+            let employeeList = rows.map(employee => ({
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id
+            }));
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employeeId',
+                    message: 'Select employee to change role',
+                    choices: employeeList
+                },
+                {
+                    type: 'text',
+                    name: 'newRole',
+                    message: 'Enter new role'
+                }
+            ]).then((response) => {
+                const { newRole, employeeId } = response
+                database.updateRole(newRole, employeeId)
+                    .then(() => {
+                        questions()
+                    })
+            })
+        })
 }
