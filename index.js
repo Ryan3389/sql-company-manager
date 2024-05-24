@@ -1,7 +1,3 @@
-// const inquirer = require('inquirer');
-// const DB = require('./db');
-// const database = new DB()
-
 const inquirer = require('inquirer')
 const DB = require('./db/db')
 const database = new DB()
@@ -146,7 +142,6 @@ function promptToAddEmployee() {
     })
 }
 
-
 function promptToAddNewRole() {
     inquirer.prompt([
         {
@@ -199,3 +194,4 @@ function updateEmployeeRole() {
             })
         })
 }
+questions()
