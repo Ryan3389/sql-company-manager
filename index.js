@@ -65,3 +65,36 @@ function questions() {
         }
     });
 }
+
+//View all dept
+function viewAllDept() {
+    database.viewDepartment()
+        .then(({ rows }) => {
+            let departments = rows;
+            console.log('\n');
+            console.table(departments);
+        })
+        .then(() => questions());
+}
+
+//view all roles
+function viewAllRoles() {
+    database.viewRoles()
+        .then(({ rows }) => {
+            let viewRoles = rows;
+            console.log('\n');
+            console.table(viewRoles);
+        })
+        .then(() => questions());
+}
+
+//view all employees
+function viewAllEmployees() {
+    database.viewEmployees()
+        .then(({ rows }) => {
+            let employees = rows;
+            console.log('\n');
+            console.table(employees);
+        })
+        .then(() => questions());
+}
