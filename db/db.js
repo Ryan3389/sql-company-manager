@@ -69,10 +69,17 @@ class DB {
         return this.query('INSERT INTO role (title, department_id, salary) VALUES ($1, $2, $3)', [title, dept, salary])
 
     }
-    updateRole(title, id) {
-        return this.query('UPDATE role SET title = $1 WHERE id = $2', [title, id]);
-    }
+    // updateRole(title, id) {
+    //     return this.query('UPDATE role SET title = $1 WHERE id = $2', [title, id]);
+    // }
 
+    updateRole(newRole, employeeId) {
+        return this.query(`
+        UPDATE employee
+        SET role_id = $1
+        WHERE id = $2;
+        `, [newRole, employeeId])
+    }
     // Add new department
     addDept(deptName) {
         return this.query('INSERT INTO department (department_name) VALUES ($1)', [deptName]);

@@ -1,5 +1,5 @@
-const inquirer = require('inquirer')
-const DB = require('./db/db')
+const inquirer = require('inquirer');
+const DB = require('./db/db');
 const database = new DB()
 
 function questions() {
@@ -65,8 +65,6 @@ function questions() {
         }
     });
 }
-
-//View all dept
 function viewAllDept() {
     database.viewDepartment()
         .then(({ rows }) => {
@@ -76,6 +74,7 @@ function viewAllDept() {
         })
         .then(() => questions());
 }
+
 
 //view all roles
 function viewAllRoles() {
@@ -87,7 +86,6 @@ function viewAllRoles() {
         })
         .then(() => questions());
 }
-
 //view all employees
 function viewAllEmployees() {
     database.viewEmployees()
@@ -99,6 +97,8 @@ function viewAllEmployees() {
         .then(() => questions());
 }
 
+
+
 function promptToAddDept() {
     inquirer.prompt([
         {
@@ -107,12 +107,19 @@ function promptToAddDept() {
             message: 'Add new department'
         }
     ]).then((response) => {
-        const { deptName } = response
+        const { deptName } = response;
         database.addDept(deptName)
-            .then(() => questions())
-    })
+            .then(() => {
+                console.log('Department added successfully!');
+                questions();
+            })
+            .catch((error) => {
+                console.error('Error adding department:', error);
+                questions();
+            });
+    });
 }
-
+// Add new employee functions
 function promptToAddEmployee() {
     inquirer.prompt([
         {
@@ -133,13 +140,20 @@ function promptToAddEmployee() {
         {
             type: 'text',
             name: 'manager',
-            message: 'Add manager ID'
+            message: 'Add manager name'
         }
     ]).then((response) => {
-        const { firstName, lastName, role, manager } = response
+        const { firstName, lastName, role, manager } = response; // Corrected line
         database.addEmployee(firstName, lastName, role, manager)
-            .then(() => questions())
-    })
+            .then(() => {
+                console.log('Employee added successfully!');
+                questions();
+            })
+            .catch((error) => {
+                console.error('Error adding employee:', error);
+                questions();
+            });
+    });
 }
 
 function promptToAddNewRole() {
@@ -147,12 +161,12 @@ function promptToAddNewRole() {
         {
             type: 'text',
             name: 'roleTitle',
-            message: 'Name of new role'
+            message: 'Enter the title for this role'
         },
         {
             type: 'text',
             name: 'roleDept',
-            message: 'Enter department ID'
+            message: 'What department does this role belong to ?'
         },
         {
             type: 'text',
@@ -160,12 +174,18 @@ function promptToAddNewRole() {
             message: 'Enter the salary for this role'
         }
     ]).then((response) => {
-        const { roleTitle, roleDept, roleSalary } = response
+        const { roleTitle, roleDept, roleSalary } = response;
         database.addRole(roleTitle, roleDept, roleSalary)
-            .then(() => questions())
-    })
+            .then(() => {
+                console.log('Role added successfully!');
+                questions();
+            })
+            .catch((error) => {
+                console.error('Error adding role:', error);
+                questions();
+            });
+    });
 }
-
 
 
 
@@ -173,32 +193,49 @@ function promptToAddNewRole() {
 //update employee role
 
 function updateEmployeeRole() {
+    // Fetch all employees to display to the user for selection
     database.viewEmployees()
         .then(({ rows }) => {
-            let employeeList = rows.map((employee) => ({
+            let employees = rows.map(employee => ({
                 name: `${employee.first_name} ${employee.last_name}`,
                 value: employee.id
-            }))
+            }));
+
+            // Prompt user to select an employee and their new role
             inquirer.prompt([
                 {
                     type: 'list',
                     name: 'employeeId',
-                    message: 'Select an employee to update',
-                    choices: employeeList
-                }, {
+                    message: 'Select an employee to update their role:',
+                    choices: employees
+                },
+                {
                     type: 'text',
                     name: 'newRole',
-                    message: 'Enter new roleId'
+                    message: 'Enter the new role for the selected employee:'
                 }
             ]).then((response) => {
-                const { employeeId, newRole } = response
+                const { employeeId, newRole } = response;
 
-                database.updateRole(newRole, employeeId)
-            }).then(() => {
-                questions()
-            })
+                // Update the selected employee's role in the database
+                database.updateRole(newRole, employeeId) // Pass employeeId here
+                    .then(() => {
+                        console.log('Employee role updated successfully!');
+                        questions();
+                    })
+                    .catch((error) => {
+                        console.error('Error updating employee role:', error);
+                        questions();
+                    });
+            });
         })
+        .catch((error) => {
+            console.error('Error fetching employees:', error);
+            questions();
+        });
 }
+
+
 
 
 
