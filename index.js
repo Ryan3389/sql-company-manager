@@ -133,7 +133,7 @@ function promptToAddEmployee() {
         {
             type: 'text',
             name: 'manager',
-            message: 'Add manager name'
+            message: 'Add manager ID'
         }
     ]).then((response) => {
         const { firstName, lastName, role, manager } = response
@@ -147,12 +147,12 @@ function promptToAddNewRole() {
         {
             type: 'text',
             name: 'roleTitle',
-            message: 'Enter the title for this role'
+            message: 'Name of new role'
         },
         {
             type: 'text',
             name: 'roleDept',
-            message: 'What department does this role belong to ?'
+            message: 'Enter department ID'
         },
         {
             type: 'text',
@@ -166,32 +166,43 @@ function promptToAddNewRole() {
     })
 }
 
+
+
+
+
+//update employee role
+
 function updateEmployeeRole() {
     database.viewEmployees()
         .then(({ rows }) => {
-            let employeeList = rows.map(employee => ({
+            let employeeList = rows.map((employee) => ({
                 name: `${employee.first_name} ${employee.last_name}`,
                 value: employee.id
-            }));
+            }))
             inquirer.prompt([
                 {
                     type: 'list',
                     name: 'employeeId',
-                    message: 'Select employee to change role',
+                    message: 'Select an employee to update',
                     choices: employeeList
-                },
-                {
+                }, {
                     type: 'text',
                     name: 'newRole',
-                    message: 'Enter new role'
+                    message: 'Enter new roleId'
                 }
             ]).then((response) => {
-                const { newRole, employeeId } = response
+                const { employeeId, newRole } = response
+
                 database.updateRole(newRole, employeeId)
-                    .then(() => {
-                        questions()
-                    })
+            }).then(() => {
+                questions()
             })
         })
 }
+
+
+
+
+
 questions()
+
