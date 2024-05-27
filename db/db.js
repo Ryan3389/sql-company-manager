@@ -15,6 +15,8 @@ class DB {
         }
     }
 
+
+
     // View all departments
     viewDepartment() {
         return this.query('SELECT * FROM department');
@@ -67,7 +69,7 @@ class DB {
         return this.query('INSERT INTO role (title, department_id, salary) VALUES ($1, $2, $3)', [title, dept, salary])
 
     }
-    updateRole(title, id) { // Accept id here
+    updateRole(title, id) {
         return this.query('UPDATE role SET title = $1 WHERE id = $2', [title, id]);
     }
 
@@ -75,6 +77,8 @@ class DB {
     addDept(deptName) {
         return this.query('INSERT INTO department (department_name) VALUES ($1)', [deptName]);
     }
+
+
 }
 
 module.exports = DB;
