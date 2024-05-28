@@ -1,8 +1,9 @@
+//Import pool connection
 const pool = require('./connection')
 
 class DB {
     constructor() { }
-
+    //create connection to database while passing sql query and args
     async query(sql, args = []) {
         const client = await pool.connect();
         try {
@@ -23,6 +24,7 @@ class DB {
     }
 
     // View all roles
+    //Join roles together
     viewRoles() {
         return this.query(`
     SELECT 
@@ -38,6 +40,7 @@ class DB {
     }
 
     // View all employees
+    //Join tables together with employee table
     viewEmployees() {
         return this.query(`
     SELECT 
@@ -69,10 +72,8 @@ class DB {
         return this.query('INSERT INTO role (title, department_id, salary) VALUES ($1, $2, $3)', [title, dept, salary])
 
     }
-    // updateRole(title, id) {
-    //     return this.query('UPDATE role SET title = $1 WHERE id = $2', [title, id]);
-    // }
 
+    //update role
     updateRole(newRole, employeeId) {
         return this.query(`
         UPDATE employee
