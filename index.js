@@ -1,7 +1,11 @@
+//Install inquirer, import db.js 
 const inquirer = require('inquirer');
 const DB = require('./db/db');
 const database = new DB()
 
+
+//Questions related to database
+//.then uses switch statement to determine which function to call to alter database
 function questions() {
     inquirer.prompt({
         type: 'list',
@@ -65,6 +69,9 @@ function questions() {
         }
     });
 }
+
+//View all departments
+//Extract department data
 function viewAllDept() {
     database.viewDepartment()
         .then(({ rows }) => {
@@ -77,6 +84,7 @@ function viewAllDept() {
 
 
 //view all roles
+//Extract role data
 function viewAllRoles() {
     database.viewRoles()
         .then(({ rows }) => {
@@ -87,6 +95,7 @@ function viewAllRoles() {
         .then(() => questions());
 }
 //view all employees
+//Extract all employee data
 function viewAllEmployees() {
     database.viewEmployees()
         .then(({ rows }) => {
@@ -98,7 +107,8 @@ function viewAllEmployees() {
 }
 
 
-
+//Uses inquirer to ask which dept to add
+//uses .then to pass in this new data into the addDept method to pass the correct sql query
 function promptToAddDept() {
     inquirer.prompt([
         {
@@ -120,6 +130,8 @@ function promptToAddDept() {
     });
 }
 // Add new employee functions
+//Uses inquirer to enter name, role and manager
+//Uses this new data to pass into addEmployee method to pass the correct sql query
 function promptToAddEmployee() {
     inquirer.prompt([
         {
@@ -135,7 +147,7 @@ function promptToAddEmployee() {
         {
             type: 'text',
             name: 'role',
-            message: 'Enter employee role'
+            message: 'Enter role id'
         },
         {
             type: 'text',
@@ -143,19 +155,20 @@ function promptToAddEmployee() {
             message: 'Add manager name'
         }
     ]).then((response) => {
-        const { firstName, lastName, role, manager } = response; // Corrected line
+        const { firstName, lastName, role, manager } = response
         database.addEmployee(firstName, lastName, role, manager)
             .then(() => {
-                console.log('Employee added successfully!');
+                console.log('Employee successfully added')
                 questions();
             })
             .catch((error) => {
-                console.error('Error adding employee:', error);
+                console.error('Error in adding employee', error)
                 questions();
             });
     });
 }
 
+//Uses inquirer to ask a series of questions to add role title, department, and salary
 function promptToAddNewRole() {
     inquirer.prompt([
         {
@@ -166,7 +179,7 @@ function promptToAddNewRole() {
         {
             type: 'text',
             name: 'roleDept',
-            message: 'What department does this role belong to ?'
+            message: 'Enter department id'
         },
         {
             type: 'text',
@@ -174,15 +187,15 @@ function promptToAddNewRole() {
             message: 'Enter the salary for this role'
         }
     ]).then((response) => {
-        const { roleTitle, roleDept, roleSalary } = response;
+        const { roleTitle, roleDept, roleSalary } = response
         database.addRole(roleTitle, roleDept, roleSalary)
             .then(() => {
-                console.log('Role added successfully!');
+                console.log('Role added successfully!')
                 questions();
             })
             .catch((error) => {
-                console.error('Error adding role:', error);
-                questions();
+                console.error('Error adding role:', error)
+                questions()
             });
     });
 }
@@ -191,9 +204,8 @@ function promptToAddNewRole() {
 
 
 //update employee role
-
 function updateEmployeeRole() {
-    // Fetch all employees to display to the user for selection
+    //Get a list of every employee
     database.viewEmployees()
         .then(({ rows }) => {
             let employees = rows.map(employee => ({
@@ -201,7 +213,7 @@ function updateEmployeeRole() {
                 value: employee.id
             }));
 
-            // Prompt user to select an employee and their new role
+            //Use inquirer to select which employee to alter
             inquirer.prompt([
                 {
                     type: 'list',
@@ -212,13 +224,13 @@ function updateEmployeeRole() {
                 {
                     type: 'text',
                     name: 'newRole',
-                    message: 'Enter the new role for the selected employee:'
+                    message: 'Enter new role id:'
                 }
             ]).then((response) => {
                 const { employeeId, newRole } = response;
 
-                // Update the selected employee's role in the database
-                database.updateRole(newRole, employeeId) // Pass employeeId here
+                //Update the new employee role in database
+                database.updateRole(newRole, employeeId)
                     .then(() => {
                         console.log('Employee role updated successfully!');
                         questions();
@@ -229,11 +241,10 @@ function updateEmployeeRole() {
                     });
             });
         })
-        .catch((error) => {
-            console.error('Error fetching employees:', error);
-            questions();
-        });
+
 }
+
+
 
 
 
